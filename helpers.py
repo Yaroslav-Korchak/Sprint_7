@@ -44,6 +44,3 @@ def empty_password_courier():
     reg = credentials_generator()
     reg.update({'password':''})
     return reg
-
-
-
