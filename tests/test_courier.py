@@ -5,6 +5,7 @@ import helpers
 from data.data import *
 import random
 import string
+import json
 
 
 class TestCourierCreateAPI:
@@ -58,14 +59,50 @@ class TestCourierCreateAPI:
 
         assert r.status_code == 400 and r.json()['message'] == "Недостаточно данных для создания учетной записи"
 
+    # @allure.title('Логин курьера без обязательных данных')
+    # @allure.description('Проверка возможности войти в учётную запись курьера без обязательных строк, или с пустыми значениями в них')
+    # def test_login_courier_without_mandatory_data(self):
+
+    @staticmethod
+    def return_login_data():
+        payload = TestCourierCreateAPI.setup_class()
+        data = payload[1]
+        login_data = data
+        login_data.pop("firstName")
+        return login_data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @allure.title('Удаление курьера')
     @allure.description('Проверка удаления курьера позитивный сценарий')
     def test_delete_courier_positive(self):
-
-        payload = self.setup_class()
-        login_data = payload[1]
-        login_data.pop('firstName')
-        response = requests.post(TestCourierLinks.login_url, data=login_data)
+        payload = self.return_login_data()
+        response = requests.post(TestCourierLinks.login_url, data=payload)
         courier_id = response.json()["id"]
         r = requests.delete('https://qa-scooter.praktikum-services.ru/api/v1/courier/' + str(courier_id))
         assert r.status_code == 200 and r.text == '{"ok":true}'
