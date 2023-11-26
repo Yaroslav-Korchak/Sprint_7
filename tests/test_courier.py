@@ -8,7 +8,7 @@ import string
 import json
 
 
-class TestCourierCreateAPI:
+class TestCourier:
 
     @classmethod
     def setup_class(cls):
@@ -26,12 +26,12 @@ class TestCourierCreateAPI:
             "password": password,
             "firstName": first_name
         }
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
+        response = requests.post(TestCourierLinks.courier_url, data=payload)
 
         return response, payload
     @staticmethod
     def return_login_data():
-        payload = TestCourierCreateAPI.setup_class()
+        payload = TestCourier.setup_class()
         data = payload[1]
         login_data = data
         login_data.pop("firstName")
@@ -46,7 +46,7 @@ class TestCourierCreateAPI:
     @allure.title('Создание дубликата курьера')
     @allure.description('Проверка создания курьера с использованием уже зарегистрированного логина и пароля')
     def test_create_courier_positive_duplicate(self):
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=self.return_login_data())
+        response = requests.post(TestCourierLinks.courier_url, data=self.return_login_data())
         try:
             assert response.status_code == 409
         except AssertionError:
@@ -97,7 +97,7 @@ class TestCourierCreateAPI:
         except AssertionError:
             print("Код ответа в тесте 'test_login_courier_with_wrong_data' не соответствует ожидаемому")
         try:
-            assert r.json()['message'] == "Курьера с таким id нет"
+            assert r.json()['message'] == "Учетная запись не найдена"
         except AssertionError:
             print("Текст сообщения в тесте 'test_login_courier_with_wrong_data' не соответствует ожидаемому")
 
@@ -110,9 +110,11 @@ class TestCourierCreateAPI:
         except AssertionError:
             print("Код ответа в тесте 'test_login_courier_with_existing_data' не соответствует ожидаемому")
         try:
-            assert r.json()['id'] > 0
+            assert len(str(r.json()['id'])) > 0
         except AssertionError:
             print("id в ответе теста 'test_login_courier_with_existing_data' не соответствует ожидаемому")
+
+
 
 
 

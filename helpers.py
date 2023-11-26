@@ -49,3 +49,4 @@ def random_login_data():
     reg = credentials_generator()
     reg.pop('firstName')
     return reg
+
