@@ -70,7 +70,7 @@ class TestCourierCreateAPI:
     # Наставник сказала что это баг и оставить так, и добавить комментарий в код. Так что как-то так)
 
     # EmptyPartOfCredentials.only_login
-    @allure.title('Логин курьера без обязательных данных')
+    @allure.title('Авторизация курьера без обязательных данных')
     @allure.description('Проверка возможности войти в учётную запись курьера без обязательных строк, или с пустыми значениями в них')
     @pytest.mark.parametrize('payload', [EmptyPartOfCredentials.only_password,
                                          EmptyPartOfCredentials.empty_login,
@@ -86,6 +86,19 @@ class TestCourierCreateAPI:
         except AssertionError:
             print("Текст сообщения в тесте 'test_login_courier_without_mandatory_data' не соответствует ожидаемому")
 
+    @allure.title('Авторизация курьера с несуществующими данными')
+    @allure.description(
+        'Проверка возможности войти в учётную запись курьера с использованием несуществующих данных')
+    def test_login_courier_with_wrong_data(self):
+        r = requests.post(TestCourierLinks.login_url, data=helpers.random_login_data())
+        try:
+            assert r.status_code == 404
+        except AssertionError:
+            print("Код ответа в тесте 'test_login_courier_with_wrong_data' не соответствует ожидаемому")
+        try:
+            assert r.json()['message'] == "Курьера с таким id нет"
+        except AssertionError:
+            print("Текст сообщения в тесте 'test_login_courier_with_wrong_data' не соответствует ожидаемому")
 
 
 

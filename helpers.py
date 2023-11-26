@@ -24,13 +24,13 @@ def credentials_generator():
 
 def no_login_courier():
     reg = credentials_generator()
-    reg.pop('password')
+    reg.pop('login')
     return reg
 
 
 def no_password_courier():
     reg = credentials_generator()
-    reg.pop('login')
+    reg.pop('password')
     return reg
 
 
@@ -43,4 +43,9 @@ def empty_login_courier():
 def empty_password_courier():
     reg = credentials_generator()
     reg.update({'password':''})
+    return reg
+
+def random_login_data():
+    reg = credentials_generator()
+    reg.pop('firstName')
     return reg
