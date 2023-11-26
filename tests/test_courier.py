@@ -114,6 +114,15 @@ class TestCourier:
         except AssertionError:
             print("id в ответе теста 'test_login_courier_with_existing_data' не соответствует ожидаемому")
 
+    @allure.title('Принять заказ')
+    @allure.description('Проверка успешного принятия заказа при отправке всех корректных данных')
+    def test_accept_order_successful(self):
+        r = requests.post(TestCourierLinks.login_url, data=self.return_login_data())
+        courier_id = (r.json()['id'])
+        params = {'courierId': courier_id}
+        response = requests.put(OrdersLinks.accept_order + str(helpers.get_order_id_by_track_number()), params=params)
+        assert response.text == '{"ok":true}'
+
 
 
 

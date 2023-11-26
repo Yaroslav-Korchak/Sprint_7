@@ -13,6 +13,7 @@ class EmptyPartOfCredentials:
 class OrdersLinks:
     orders = 'https://qa-scooter.praktikum-services.ru/api/v1/orders'
     track_order = 'https://qa-scooter.praktikum-services.ru/api/v1/orders/track'
+    accept_order = 'https://qa-scooter.praktikum-services.ru/api/v1/orders/accept/'
 
 
 
