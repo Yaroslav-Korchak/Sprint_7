@@ -46,14 +46,7 @@ class TestCourier:
     @allure.description('Проверка создания курьера с использованием уже зарегистрированного логина и пароля')
     def test_create_courier_positive_duplicate(self):
         response = requests.post(TestCourierLinks.courier_url, data=self.return_login_data())
-        try:
-            assert response.status_code == 409
-        except AssertionError:
-            print("Код ответа в тесте 'test_create_courier_positive_duplicate' не соответствует ожидаемому")
-        try:
-            assert response.text == '{"message": "Этот логин уже используется. Попробуйте другой."}'
-        except AssertionError:
-            print("Текст сообщения в тесте 'test_create_courier_positive_duplicate' не соответствует ожидаемому")
+        assert response.status_code == 409 and response.json()['message'] == "Этот логин уже используется. Попробуйте другой."
 
 
     @allure.title('Создание курьера без обязательных данных')
@@ -77,41 +70,20 @@ class TestCourier:
                                          EmptyPartOfCredentials.empty_password])
     def test_login_courier_without_mandatory_data(self, payload):
         r = requests.post(TestCourierLinks.login_url, data=payload)
-        try:
-            assert r.status_code == 400
-        except AssertionError:
-            print("Код ответа в тесте 'test_login_courier_without_mandatory_data' не соответствует ожидаемому")
-        try:
-            assert r.json()['message'] == "Недостаточно данных для входа"
-        except AssertionError:
-            print("Текст сообщения в тесте 'test_login_courier_without_mandatory_data' не соответствует ожидаемому")
+        assert r.status_code == 400 and r.json()['message'] == "Недостаточно данных для входа"
 
     @allure.title('Авторизация курьера с несуществующими данными')
     @allure.description(
         'Проверка возможности войти в учётную запись курьера с использованием несуществующих данных')
     def test_login_courier_with_wrong_data(self):
         r = requests.post(TestCourierLinks.login_url, data=helpers.random_login_data())
-        try:
-            assert r.status_code == 404
-        except AssertionError:
-            print("Код ответа в тесте 'test_login_courier_with_wrong_data' не соответствует ожидаемому")
-        try:
-            assert r.json()['message'] == "Учетная запись не найдена"
-        except AssertionError:
-            print("Текст сообщения в тесте 'test_login_courier_with_wrong_data' не соответствует ожидаемому")
+        assert r.status_code == 404 and r.json()['message'] == "Учетная запись не найдена"
 
     @allure.title('Авторизация курьера с существующими данными')
     @allure.description('Проверка возможности войти в учётную запись курьера с использованием существующих данных')
     def test_login_courier_with_existing_data(self):
         r = requests.post(TestCourierLinks.login_url, data=self.return_login_data())
-        try:
-            assert r.status_code == 200
-        except AssertionError:
-            print("Код ответа в тесте 'test_login_courier_with_existing_data' не соответствует ожидаемому")
-        try:
-            assert len(str(r.json()['id'])) > 0
-        except AssertionError:
-            print("id в ответе теста 'test_login_courier_with_existing_data' не соответствует ожидаемому")
+        assert r.status_code == 200 and len(str(r.json()['id'])) > 0
 
     @allure.title('Принять заказ')
     @allure.description('Проверка успешного принятия заказа при отправке всех корректных данных')
@@ -120,7 +92,7 @@ class TestCourier:
         courier_id = (r.json()['id'])
         params = {'courierId': courier_id}
         response = requests.put(OrdersLinks.accept_order + str(helpers.get_order_id_by_track_number()), params=params)
-        assert response.text == '{"ok":true}'
+        assert response.text == '{"ok":true}' and response.status_code == 200
 
     @allure.title('Принять заказ без id курьера')
     @allure.description('Попытка принять заказ без id курьера должна вернуть ошибку 400')
@@ -135,7 +107,7 @@ class TestCourier:
         courier_id = (r.json()['id'])
         params = {'courierId': courier_id}
         response = requests.put(OrdersLinks.accept_order,  params=params)
-        assert response.status_code == 400, "Код ответа в тесте 'test_login_courier_with_existing_data' не соответствует ожидаемому"
+        assert response.status_code == 400 and response.json()['message'] == "Недостаточно данных для поиска"
 
     @allure.title('Принять заказ с несуществующим id курьера')
     @allure.description('Попытка принять заказ с несуществующим id курьера должна вернуть ошибку 404')
