@@ -2,6 +2,7 @@ import requests
 import random
 import string
 from data.data import *
+import json
 
 
 def credentials_generator():
@@ -13,6 +14,7 @@ def credentials_generator():
     login = generate_random_string(10)
     password = generate_random_string(10)
     first_name = generate_random_string(10)
+
 
     credentials = {
         "login": login,
@@ -50,3 +52,12 @@ def random_login_data():
     reg.pop('firstName')
     return reg
 
+def random_track_number():
+    track_number = random.randint(9000000,9999999)
+    return track_number
+
+def get_track_number():
+    order_data = json.dumps(DataToCreateOrder.payload)
+    response = requests.post(OrdersLinks.orders, data=order_data)
+    track_number = response.json()["track"]
+    return track_number

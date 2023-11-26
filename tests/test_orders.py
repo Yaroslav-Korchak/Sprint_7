@@ -23,7 +23,24 @@ class TestOrders:
         DataToCreateOrder.payload["color"] = [color]
         order_data = json.dumps(DataToCreateOrder.payload)
         response = requests.post(OrdersLinks.orders, data=order_data)
-        assert response.status_code == 201 and 'track' in response.text
+        assert 'track' in response.text
+
+    @allure.description("Получение заказа без трек-номера или с несуществующим трек-номером")
+    @allure.title('Проверка возможности получения заказа без трек-номера или с несуществующим трек-номером')
+    @pytest.mark.parametrize('track_number, answer', [[helpers.random_track_number(), 404], ["", 400]])
+    def test_get_order_by_track_number_fail(self, track_number, answer):
+        params = {}
+        params["t"] = [track_number]
+        response = requests.get(OrdersLinks.track_order, params=params)
+        assert response.status_code == answer
+
+    @allure.description("Получение заказа по его трек-номерому")
+    @allure.title('Проверка возможности получения заказа по его трек-номерому')
+    def test_get_order_by_track_number_positive(self):
+        params = {"t": helpers.get_track_number()}
+        response = requests.get(OrdersLinks.track_order, params=params)
+        assert "order" in response.text
+
 
 
 

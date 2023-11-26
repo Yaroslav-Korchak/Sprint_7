@@ -12,6 +12,7 @@ class EmptyPartOfCredentials:
 
 class OrdersLinks:
     orders = 'https://qa-scooter.praktikum-services.ru/api/v1/orders'
+    track_order = 'https://qa-scooter.praktikum-services.ru/api/v1/orders/track'
 
 
 
@@ -24,8 +25,6 @@ class DataToCreateOrder:
         "phone": "+7 800 355 35 35",
         "rentTime": 5,
         "deliveryDate": "2020-06-06",
-        "comment": "Saske, come back to Konoha",
-        "color": [
-            "BLACK"
-        ]
+        "comment": "Saske, come back to Konoha"
     }
+
