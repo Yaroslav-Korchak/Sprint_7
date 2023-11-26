@@ -3,8 +3,6 @@ import allure
 import requests
 import helpers
 from data.data import *
-import random
-import string
 import json
 
 class TestOrders:

@@ -5,7 +5,6 @@ import helpers
 from data.data import *
 import random
 import string
-import json
 
 
 class TestCourier:
@@ -127,7 +126,7 @@ class TestCourier:
     @allure.description('Попытка принять заказ без id курьера должна вернуть ошибку 400')
     def test_accept_order_without_courier_id_fail(self):
         response = requests.put(OrdersLinks.accept_order + str(helpers.get_order_id_by_track_number()))
-        assert response.status_code == 400
+        assert response.status_code == 400 and response.json()['message'] == "Недостаточно данных для поиска"
 
     @allure.title('Принять заказ без id заказа')
     @allure.description('Попытка принять заказ без id заказа должна вернуть ошибку 400')
@@ -146,31 +145,31 @@ class TestCourier:
         params = {'courierId': courier_id}
         response = requests.put(OrdersLinks.accept_order + str(helpers.get_order_id_by_track_number()),
                                     params=params)
-        assert response.status_code == 404
+        assert response.status_code == 404 and response.json()['message'] == "Курьера с таким id не существует"
 
     @allure.title('Принять заказ с несуществующим id заказа')
     @allure.description('Попытка принять заказ с несуществующим id заказа должна вернуть ошибку 404')
     def test_accept_order_with_wrong_order_id(self):
         r = requests.post(TestCourierLinks.login_url, data=self.return_login_data())
-        courier_id = (r.json()['id']) + random.randint(10000, 99999)
+        courier_id = r.json()['id']
         params = {'courierId': courier_id}
         response = requests.put(OrdersLinks.accept_order + str(helpers.get_order_id_by_track_number() + random.randint(10000, 99999)),
                                 params=params)
-        assert response.status_code == 404
+        assert response.status_code == 404 and response.json()['message'] == "Заказа с таким id не существует"
 
     @allure.title('Удаление курьера без отправки id')
     @allure.description('Проверка удаления курьера без отправки id')
     def test_delete_courier_positive(self):
         r = requests.delete(TestCourierLinks.delete_courier_url)
-        assert r.status_code == 400
+        assert r.status_code == 400 and r.json()['message'] == 'Недостаточно данных для удаления курьера'
 
-    @allure.title('Удаление курьера')
-    @allure.description('Проверка удаления курьера позитивный сценарий')
+    @allure.title('Удаление курьера с несуществующим id')
+    @allure.description('Проверка удаления курьера с несуществующим id')
     def test_delete_courier_positive(self):
         response = requests.post(TestCourierLinks.login_url, data=self.return_login_data())
         courier_id = response.json()["id"]
         r = requests.delete(TestCourierLinks.delete_courier_url + str(courier_id + random.randint(10000, 99999)))
-        assert r.status_code == 404 and r.text == '{"ok":true}'
+        assert r.status_code == 404 and r.json()['message'] == '"Курьера с таким id нет.'
 
     @allure.title('Удаление курьера')
     @allure.description('Проверка удаления курьера позитивный сценарий')

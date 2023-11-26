@@ -55,6 +55,7 @@ def random_login_data():
 def random_track_number():
     track_number = random.randint(9000000,9999999)
     return track_number
+print(random_track_number())
 
 
 def get_track_number():
