@@ -27,6 +27,7 @@ class TestCourierCreateAPI:
             "firstName": first_name
         }
         response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
+
         return response, payload
     @staticmethod
     def return_login_data():
@@ -99,6 +100,22 @@ class TestCourierCreateAPI:
             assert r.json()['message'] == "Курьера с таким id нет"
         except AssertionError:
             print("Текст сообщения в тесте 'test_login_courier_with_wrong_data' не соответствует ожидаемому")
+
+    @allure.title('Авторизация курьера с существующими данными')
+    @allure.description('Проверка возможности войти в учётную запись курьера с использованием существующих данных')
+    def test_login_courier_with_existing_data(self):
+        r = requests.post(TestCourierLinks.login_url, data=self.return_login_data())
+        try:
+            assert r.status_code == 200
+        except AssertionError:
+            print("Код ответа в тесте 'test_login_courier_with_existing_data' не соответствует ожидаемому")
+        try:
+            assert r.json()['id'] > 0
+        except AssertionError:
+            print("id в ответе теста 'test_login_courier_with_existing_data' не соответствует ожидаемому")
+
+
+
 
 
 
