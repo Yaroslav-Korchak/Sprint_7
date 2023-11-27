@@ -62,12 +62,12 @@ class TestCourier:
     # В данном тесте, если отправить тело без пароля или "password": null, где-то через минуту от сервера приходит ошибка 504 Service unavailable
     # Наставник сказала что это баг и оставить так, и добавить комментарий в код. Так что как-то так)
 
-    # EmptyPartOfCredentials.only_login
     @allure.title('Авторизация курьера без обязательных данных')
     @allure.description('Проверка возможности войти в учётную запись курьера без обязательных строк, или с пустыми значениями в них')
     @pytest.mark.parametrize('payload', [EmptyPartOfCredentials.only_password,
                                          EmptyPartOfCredentials.empty_login,
-                                         EmptyPartOfCredentials.empty_password])
+                                         EmptyPartOfCredentials.empty_password,
+                                         EmptyPartOfCredentials.only_login])
     def test_login_courier_without_mandatory_data(self, payload):
         r = requests.post(TestCourierLinks.login_url, data=payload)
         assert r.status_code == 400 and r.json()['message'] == "Недостаточно данных для входа"
