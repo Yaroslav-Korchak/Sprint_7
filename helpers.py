@@ -1,8 +1,7 @@
-import requests
 import random
 import string
-from data.data import *
-import json
+
+import conftest
 
 
 def credentials_generator():
@@ -55,18 +54,25 @@ def random_login_data():
 def random_track_number():
     track_number = random.randint(9000000,9999999)
     return track_number
-print(random_track_number())
 
 
-def get_track_number():
-    order_data = json.dumps(DataToCreateOrder.payload)
-    response = requests.post(OrdersLinks.orders, data=order_data)
-    track_number = response.json()["track"]
-    return track_number
+# def get_track_number():
+#     order_data = json.dumps(DataToCreateOrder.payload)
+#     response = requests.post(OrdersLinks.orders, data=order_data)
+#     track_number = response.json()["track"]
+#     return track_number
+#
+# def get_order_id_by_track_number():
+#     params = {"t": get_track_number()}
+#     response = requests.get(OrdersLinks.track_order, params=params)
+#     return response.json()["order"]["id"]
 
-def get_order_id_by_track_number():
-    params = {"t": get_track_number()}
-    response = requests.get(OrdersLinks.track_order, params=params)
-    return response.json()["order"]["id"]
+# def return_login_data(create_courier):
+#     # payload = create_courier[1]
+#     data = create_courier[1]
+#     login_data = data
+#     login_data.pop("firstName")
+#     return login_data
+
 
 
