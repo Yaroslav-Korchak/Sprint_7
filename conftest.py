@@ -7,7 +7,7 @@ import string
 
 
 @pytest.fixture
-def create_courier():
+def create_and_delete_courier():
     def generate_random_string(length):
         letters = string.ascii_lowercase
         random_string = ''.join(random.choice(letters) for i in range(length))
@@ -27,4 +27,10 @@ def create_courier():
     login_data.pop("firstName")
     response = requests.post(TestCourierLinks.courier_url, data=payload)
 
-    return response, payload, login_data
+    yield response, payload, login_data
+
+    resp = requests.post(TestCourierLinks.login_url, data=login_data)
+    courier_id = resp.json()["id"]
+    requests.delete(TestCourierLinks.delete_courier_url + str(courier_id))
+
+

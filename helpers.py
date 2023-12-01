@@ -46,10 +46,12 @@ def empty_password_courier():
     reg.update({'password':''})
     return reg
 
+
 def random_login_data():
     reg = credentials_generator()
     reg.pop('firstName')
     return reg
+
 
 def random_track_number():
     track_number = random.randint(9000000,9999999)
