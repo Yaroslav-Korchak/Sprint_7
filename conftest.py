@@ -1,5 +1,4 @@
 import pytest
-import allure
 import requests
 from data.data import *
 import random
